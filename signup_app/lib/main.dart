@@ -160,6 +160,15 @@ class _SignupPageState extends State<SignupPage> {
                         backgroundColor: Colors.green,
                       ),
                     );
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => WelcomeScreen(
+                          name: _nameController.text.trim(),
+                        ),
+                      ),
+                    );
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -175,6 +184,33 @@ class _SignupPageState extends State<SignupPage> {
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// welcome screen widget
+class WelcomeScreen extends StatelessWidget {
+  final String name;
+
+  const WelcomeScreen({super.key, required this.name});
+
+  @override
+  Widget build(BuildContext context) {
+    // welcome page layout
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Welcome Screen'),
+        backgroundColor: Colors.purple,
+      ),
+      body: Center(
+        child: Text(
+          'Welcome, $name!',
+          style: const TextStyle(
+            fontSize: 26,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
