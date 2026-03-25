@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 
+// app entry point
 void main() {
   runApp(const MyApp());
 }
 
-// 🧓 Great-Grandparent
+// top level app widget
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // material app setup
     return MaterialApp(
       title: 'Fun Signup App',
       theme: ThemeData(primarySwatch: Colors.purple),
@@ -18,6 +20,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// signup page widget
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
 
@@ -25,35 +28,54 @@ class SignupPage extends StatefulWidget {
   State<SignupPage> createState() => _SignupPageState();
 }
 
+// signup page state
 class _SignupPageState extends State<SignupPage> {
-  // 🔑 The Global Key - acts like a remote control for the form
+
+  // form key controls validation
   final _formKey = GlobalKey<FormState>();
-  
-  // 📝 Controllers to track what the user types
+
+  // controllers track user input
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
+  // dispose controllers to prevent memory leaks
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold( // 👨 Parent
+    // scaffold layout
+    return Scaffold(
       appBar: AppBar(
         title: const Text('Join Us Today for the Cash Money!'),
         backgroundColor: Colors.purple,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Form( // 👶 Child
+
+        // form widget
+        child: Form(
           key: _formKey,
+
+          // column layout
           child: Column(
             children: [
+
+              // heading text
               const Text(
                 'Create Your Account',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
+
               const SizedBox(height: 20),
-              
-              // 👤 Name Field
+
+              // name input field
               TextFormField(
                 controller: _nameController,
                 decoration: const InputDecoration(
@@ -68,9 +90,10 @@ class _SignupPageState extends State<SignupPage> {
                   return null;
                 },
               ),
+
               const SizedBox(height: 16),
-              
-              // 📧 Email Field
+
+              // email input field
               TextFormField(
                 controller: _emailController,
                 decoration: const InputDecoration(
@@ -88,9 +111,10 @@ class _SignupPageState extends State<SignupPage> {
                   return null;
                 },
               ),
+
               const SizedBox(height: 16),
-              
-              // 🔒 Password Field
+
+              // password input field
               TextFormField(
                 controller: _passwordController,
                 obscureText: true,
@@ -109,9 +133,10 @@ class _SignupPageState extends State<SignupPage> {
                   return null;
                 },
               ),
+
               const SizedBox(height: 24),
-              
-              // 🚀 Sign Up Button
+
+              // signup button
               ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
@@ -125,7 +150,10 @@ class _SignupPageState extends State<SignupPage> {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.purple,
-                  padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 40,
+                    vertical: 12,
+                  ),
                 ),
                 child: const Text(
                   'Sign Up',
