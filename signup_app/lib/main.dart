@@ -13,8 +13,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     // material app setup
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Fun Signup App',
-      theme: ThemeData(primarySwatch: Colors.purple),
+      theme: ThemeData(
+        primarySwatch: Colors.purple,
+      ),
       home: const SignupPage(),
     );
   }
@@ -30,7 +33,6 @@ class SignupPage extends StatefulWidget {
 
 // signup page state
 class _SignupPageState extends State<SignupPage> {
-
   // form key controls validation
   final _formKey = GlobalKey<FormState>();
 
@@ -83,107 +85,134 @@ class _SignupPageState extends State<SignupPage> {
     return null;
   }
 
+  // handle successful submit
+  void _submitForm() {
+    // close keyboard
+    FocusScope.of(context).unfocus();
+
+    // validate all fields
+    if (_formKey.currentState!.validate()) {
+      // show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Welcome! Account created successfully.'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      // move to welcome screen
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => WelcomeScreen(
+            name: _nameController.text.trim(),
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // scaffold layout
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Join Us Today for the Cash Money!'),
-        backgroundColor: Colors.purple,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+    return GestureDetector(
+      onTap: () {
+        // dismiss keyboard when tapping outside
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Join Us Today for the Cash Money!'),
+          backgroundColor: Colors.purple,
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
 
-        // form widget
-        child: Form(
-          key: _formKey,
+            // form widget
+            child: Form(
+              key: _formKey,
 
-          // column layout
-          child: Column(
-            children: [
-
-              // heading text
-              const Text(
-                'Create Your Account',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-
-              const SizedBox(height: 20),
-
-              // name input field
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Full Name',
-                  prefixIcon: Icon(Icons.person),
-                  border: OutlineInputBorder(),
-                ),
-                validator: _validateName,
-              ),
-
-              const SizedBox(height: 16),
-
-              // email input field
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: 'Email Address',
-                  prefixIcon: Icon(Icons.email),
-                  border: OutlineInputBorder(),
-                ),
-                validator: _validateEmail,
-              ),
-
-              const SizedBox(height: 16),
-
-              // password input field
-              TextFormField(
-                controller: _passwordController,
-                obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: 'Password',
-                  prefixIcon: Icon(Icons.lock),
-                  border: OutlineInputBorder(),
-                ),
-                validator: _validatePassword,
-              ),
-
-              const SizedBox(height: 24),
-
-              // signup button
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Welcome! Account created successfully.'),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => WelcomeScreen(
-                          name: _nameController.text.trim(),
-                        ),
-                      ),
-                    );
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.purple,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 40,
-                    vertical: 12,
+              // column layout
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  // heading text
+                  const Text(
+                    'Create Your Account',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                child: const Text(
-                  'Sign Up',
-                  style: TextStyle(fontSize: 18),
-                ),
+
+                  const SizedBox(height: 20),
+
+                  // name input field
+                  TextFormField(
+                    controller: _nameController,
+                    textInputAction: TextInputAction.next,
+                    decoration: const InputDecoration(
+                      labelText: 'Full Name',
+                      prefixIcon: Icon(Icons.person),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: _validateName,
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // email input field
+                  TextFormField(
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                    decoration: const InputDecoration(
+                      labelText: 'Email Address',
+                      prefixIcon: Icon(Icons.email),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: _validateEmail,
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  // password input field
+                  TextFormField(
+                    controller: _passwordController,
+                    obscureText: true,
+                    textInputAction: TextInputAction.done,
+                    decoration: const InputDecoration(
+                      labelText: 'Password',
+                      prefixIcon: Icon(Icons.lock),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: _validatePassword,
+                    onFieldSubmitted: (_) {
+                      _submitForm();
+                    },
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // signup button
+                  ElevatedButton(
+                    onPressed: _submitForm,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.purple,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 14,
+                      ),
+                    ),
+                    child: const Text(
+                      'Sign Up',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
